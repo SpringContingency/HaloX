@@ -1,0 +1,136 @@
+#pragma once
+
+#include "game_event_manager.h"
+
+namespace libmcc {
+
+class c_game_manager : public i_game_manager {
+public:
+	void __fastcall begin_frame() override;
+	void __fastcall end_frame(IDXGISwapChain* swapchain, UINT* flags) override;
+	void __fastcall resize() override;
+	void __fastcall set_game_state(e_game_state state) override;
+	void __fastcall restart_game(e_game_restart_reason reason, const char* message) override;
+	void __fastcall save_game(const char* buf, uint32_t len) override;
+	void __fastcall set_game_result(s_game_result* result) override;
+	void __fastcall pause_game(int a1) override;
+	void __fastcall _pause_game_(int a1) override;
+	void __fastcall set_game_objectives(const wchar_t* primary, const wchar_t* secondary) override;
+	i_game_event_manager* __fastcall get_game_event_manager() override;
+	void __fastcall set_game_engine_variant(i_game_engine_variant* variant) override;
+	void __fastcall set_scenario_map_variant(i_scenario_map_variant* variant) override;
+	uintptr_t __fastcall _() override;
+	void __fastcall set_player_look_control(e_local_player player, bool inverted) override;
+	void __fastcall set_player_profile_game_specific(e_local_player player, const s_game_specific_storage* game_specific) override;
+	bool __fastcall get_map_info(s_scenario_map_id* id, void* a3, void* a4, void* a5) override;
+	bool __fastcall get_campaign_map_info(const s_scenario_map_id* id, const char** info, uint32_t* size) override;
+	bool __fastcall get_multiplayer_map_info(const s_scenario_map_id* id, const char** info, uint32_t* size) override;
+	uintptr_t __fastcall sub_1401E3EB0() override;
+	uintptr_t __fastcall sub_1401E518C() override;
+	uintptr_t __fastcall sub_1401E4044() override;
+	uintptr_t __fastcall sub_1401E440C() override;
+	uintptr_t __fastcall update_launch_timer(int a2, float a3) override;
+	uintptr_t __fastcall sub_1401E4ED4() override;
+	uintptr_t __fastcall __() override;
+	uintptr_t __fastcall sub_1401F6630() override;
+	uintptr_t __fastcall sub_1401E4F44() override;
+	uintptr_t __fastcall sub_1401E4F58() override;
+	uintptr_t __fastcall sub_1401E4FCC() override;
+	uintptr_t __fastcall sub_1401E50C0() override;
+	uintptr_t __fastcall sub_1401E51A4() override;
+	bool __fastcall get_video_setting(s_game_video_settings* settings) override;
+	uintptr_t __fastcall get_audio_setting(s_game_audio_settings* settings) override;
+	s_player_profile* __fastcall get_player_profile(XUID xuid) override;
+	uintptr_t __fastcall sub_1401E4EC4() override;
+	bool __fastcall get_input_state(e_local_player player, s_input_state* state) override;
+	bool __fastcall get_input_state_gamepad(e_local_player player, s_input_state* state) override;
+	float __fastcall update_input_time(e_local_player player) override;
+	void __fastcall set_input_state(e_local_player player, s_rumble_state* state) override;
+	char __fastcall sub_1401E5AD8(__int64 a2, __int64 a3) override;
+	uint32_t __fastcall network_sendto_unreliable(network_id id, const char* buf, uint32_t len, uint32_t port) override;
+	uint32_t __fastcall network_sendto_reliable(network_id id, const char* buf, uint32_t len, uint32_t port) override;
+	uint32_t __fastcall network_recvfrom(char* buf, uint32_t len, network_id* id, uint32_t* port) override;
+	void __fastcall network_send(const char* buf) override;
+	__int64 __fastcall sub_1401E62F0(__int64 a2, float a3) override;
+	bool __fastcall get_folder_path(e_folder folder, wchar_t* buf, size_t len) override;
+	bool __fastcall get_game_folder_path(e_folder folder, wchar_t* buf, size_t len) override;
+	bool __fastcall get_scenario_path_a(bool builtin, char* buf, size_t len) override;
+	bool __fastcall get_scenario_path_w(bool builtin, wchar_t* buf, size_t len) override;
+	bool __fastcall get_ugc_id(s_scenario_map_id* map_id, char* buf, size_t len) override;
+	bool __fastcall get_game_setting(e_game_setting setting, bool* v1, uint64_t* v2) override;
+	bool __fastcall validate_cache_file(int a2) override;
+	uintptr_t __fastcall sub_1401E6664() override;
+	uintptr_t __fastcall sub_1401E66C4() override;
+	uintptr_t __fastcall sub_1401E67A8() override;
+	uintptr_t __fastcall sub_1401E67D4() override;
+	bool __fastcall get_game_mode(int a2, unsigned int a3, wchar_t* buf, size_t len) override;
+	bool __fastcall get_subtitle(const char* sound_tag_name, const char* prefix, int index, wchar_t* buf, size_t len) override;
+	bool __fastcall font__() override;
+	bool __fastcall font___() override;
+	bool __fastcall font_test_string(const wchar_t* str, int font_id, float scale, const char* font_name) override;
+	bool __fastcall font_precache_character(wchar_t c, s_font_character* character, int font_id, float scale, const char* font_name) override;
+	bool __fastcall font_test__(int) override;
+	bool __fastcall font_test_char(wchar_t c, int font_id, float scale, const char* font_name) override;
+	int __fastcall font_get_kerning_pair_offset(wchar_t c, int, int font_id, float scale, const char* font_name) override;
+	bool __fastcall font_set__(wchar_t c, int font_id, float scale, const char* font_name, int len, int count, int a8, const char* data, int size) override;
+	bool __fastcall font_get_height(int font_id, float scale, const char* font_name, uint16_t* ascender, uint16_t* descender) override;
+	bool __fastcall font____() override;
+	float __fastcall sub_1401E6154() override;
+	void __fastcall sub_1401E615C() override;
+	uintptr_t __fastcall sub_1401E3EF0() override;
+	void __fastcall draw_player_icon(XUID xuid, int, float x0, float x1, float y0, float y1) override;
+	uintptr_t __fastcall sub_1401E4418() override;
+	uintptr_t __fastcall sub_1401E44C8() override;
+	bool __fastcall get_player_weapon_offset(datum_index index, e_local_player player, const char* tag_name, real_vector3d* offset, bool dual_wielding) override;
+	uintptr_t __fastcall sub_1401E72BC() override;
+	uintptr_t __fastcall sub_1401E72C4() override;
+	uintptr_t __fastcall sub_1401E72CC() override;
+	uintptr_t __fastcall sub_1401E731C() override;
+	uintptr_t __fastcall sub_1401E7324() override;
+	uintptr_t __fastcall sub_1401E732C() override;
+	uintptr_t __fastcall sub_1401E7354() override;
+	uintptr_t __fastcall sub_1401E73AC() override;
+	uintptr_t __fastcall sub_1401E7484() override;
+	uintptr_t __fastcall sub_1401E74C0() override;
+	uintptr_t __fastcall sub_1401E7500() override;
+	uintptr_t __fastcall sub_1401E750C() override;
+	bool __fastcall get_player_xuid(XUID* xuid, wchar_t* name, int size, e_local_player player) override;
+	uintptr_t __fastcall sub_1401E7540() override;
+	uintptr_t __fastcall sub_1401E75B0() override;
+	uintptr_t __fastcall sub_1401E75E8() override;
+	uintptr_t __fastcall sub_1401E7618() override;
+	uintptr_t __fastcall sub_1401E763C() override;
+	uintptr_t __fastcall sub_1401E7668() override;
+	uintptr_t __fastcall sub_1401E7684() override;
+	uintptr_t __fastcall sub_1401E7718() override;
+	uintptr_t __fastcall sub_1401E5880() override;
+	uintptr_t __fastcall sub_1401E77DC() override;
+	uintptr_t __fastcall sub_1401E77C8() override;
+	uintptr_t __fastcall ___() override;
+	uintptr_t __fastcall ____() override;
+	uintptr_t __fastcall _____() override;
+	uintptr_t __fastcall ______() override;
+	uintptr_t __fastcall _______() override;
+	uintptr_t __fastcall ________() override;
+	uintptr_t __fastcall _________() override;
+	uintptr_t __fastcall __________() override;
+	uintptr_t __fastcall sub_1401E77FC() override;
+	uintptr_t __fastcall sub_1401E788C() override;
+	uintptr_t __fastcall sub_1401E3EFC() override;
+	uintptr_t __fastcall sub_1401E666C() override;
+	uintptr_t __fastcall sub_1401E6738() override;
+	uintptr_t __fastcall sub_1401E2438() override;
+	uintptr_t __fastcall sub_1401E2580() override;
+	bool __fastcall sub_1401E7A10() override;
+	s_gamepad_mapping* __fastcall get_player_gamepad_mapping(XUID xuid) override;
+	int __fastcall sub_1401C1920() override;
+	bool __fastcall sub_1401E7AF0() override;
+	uintptr_t __fastcall ___________() override;
+	uintptr_t __fastcall ____________() override;
+public:
+	float m_game_loading_progress;
+};
+
+}
+
+inline static libmcc::c_game_manager g_game_manager;

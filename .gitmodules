@@ -1,0 +1,7 @@
+[submodule "dep/imgui"]
+	path = dep/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "dep/libmcc"]
+	path = dep/libmcc
+	url = https://github.com/SpringContingency/libmcc.git
+	branch = header_only
