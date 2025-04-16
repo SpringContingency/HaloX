@@ -37,7 +37,7 @@ endif()
 
 add_compile_definitions(PROJECT_NAME=${PROJECT_NAME})
 
-file(GLOB_RECURSE ${PROJECT_NAME}_SRC "${CMAKE_SOURCE_DIR}/src/*.cpp")
+file(GLOB_RECURSE ${PROJECT_NAME}_SRC "${CMAKE_SOURCE_DIR}/src/*.cpp" "${CMAKE_SOURCE_DIR}/src/*.c")
 
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
 
