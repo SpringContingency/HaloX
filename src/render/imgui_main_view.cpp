@@ -1,8 +1,8 @@
-#include "main.h"
+#include "imgui_main_view.h"
+#include "imgui_player_view.h"
+#include "../main/main.h"
 
-#include <imgui.h>
-
-void main_render() {
+void c_imgui_main_view::render() {
 	static bool show_demo = false;
 	static bool show_player = false;
 
@@ -18,11 +18,14 @@ void main_render() {
 		ImGui::EndMainMenuBar();
 	}
 
-	main_render_game();
-
 	if (show_demo)
 		ImGui::ShowDemoWindow(&show_demo);
 
-	if (show_player)
-		main_render_player(&show_player);
+	if (show_player) {
+		c_imgui_player_view imgui_player_view;
+		if (imgui_player_view.begin(&show_player)) {
+			imgui_player_view.render();
+		}
+		imgui_player_view.end();
+	}
 }

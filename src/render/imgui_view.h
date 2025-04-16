@@ -1,10 +1,12 @@
 #pragma once
 
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_internal.h>
 
-class i_imgui_view {
+class c_imgui_view {
 public:
-	virtual bool begin(bool* open = nullptr) = 0;
-	virtual void end() = 0;
+	virtual bool begin(bool* show = nullptr) {return true;};
+	virtual void render() {};
+	virtual void end() {}
 };

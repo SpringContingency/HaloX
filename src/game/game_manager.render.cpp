@@ -1,7 +1,9 @@
 #include "game_manager.h"
-
 #include "game_instance_manager.h"
 #include "../rasterizer/rasterizer.h"
+#include "../render/imgui_main_view.h"
+#include "../render/imgui_game_view.h"
+#include "../render/imgui_game_halo3_view.h"
 
 #include <imgui.h>
 #include <backends/imgui_impl_win32.h>
@@ -29,9 +31,28 @@ void __fastcall c_game_manager::begin_frame() {
 	}
 }
 
-void __fastcall c_game_manager::end_frame(IDXGISwapChain* swapchain, UINT* flags) {
+static c_imgui_game_halo3_view imgui_game_halo3_view;
+
+static c_imgui_view* game_views[k_game_count] = {
+	nullptr,
+	nullptr,
+	&imgui_game_halo3_view,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+};
+
+void __fastcall c_game_manager::end_frame(
+	IDXGISwapChain* swapchain, 
+	UINT* flags
+) {
 	if (g_show_imgui_cached) {
-		main_render();
+		c_imgui_main_view().render();
+		c_imgui_game_ingame_view().render();
+		auto game = game_instance_manager()->get_game();
+		auto game_view = game_views[game];
+		if (game_view) game_view->render();
 		rasterizer()->end_frame();
 	}
 }

@@ -45,8 +45,3 @@ extern LONG g_show_imgui_cached;
 extern volatile LONG g_show_imgui;
 extern volatile LONG g_game_focused;
 extern c_fixed_thread_safe_queue<MSG> g_message_queue;
-
-void main_render();
-void main_render_game();
-void main_render_game_halo3();
-void main_render_player(bool* show);

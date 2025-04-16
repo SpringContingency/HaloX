@@ -5,6 +5,9 @@
 #include "../player/player_manager.h"
 #include "../game/game_instance_manager.h"
 
+#include "../render/imgui_main_view.h"
+#include "../render/imgui_game_view.h"
+
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <backends/imgui_impl_dx11.h>
@@ -118,7 +121,8 @@ int APIENTRY WinMain(
 		}
 
 		rasterizer()->begin_frame();
-		main_render();
+		c_imgui_main_view().render();
+		c_imgui_game_mainmenu_view().render();
 		rasterizer()->end_frame();
 	}
 
