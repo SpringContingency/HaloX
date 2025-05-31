@@ -5,3 +5,12 @@
 	path = dep/libmcc
 	url = https://github.com/SpringContingency/libmcc.git
 	branch = header_only
+[submodule "dep/freetype"]
+	path = dep/freetype
+	url = https://github.com/freetype/freetype.git
+[submodule "dep/zlib"]
+	path = dep/zlib
+	url = https://github.com/madler/zlib.git
+[submodule "dep/json"]
+	path = dep/json
+	url = https://github.com/nlohmann/json.git

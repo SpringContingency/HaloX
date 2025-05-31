@@ -7,6 +7,17 @@ using namespace libmcc;
 
 static s_player_profile g_player_profile;
 
+ID3D11ShaderResourceView* __fastcall c_game_manager::get_player_skin(uint32_t a1, uint32_t a2) {
+	return nullptr;
+}
+
+ID3D11ShaderResourceView* __fastcall c_game_manager::get_player_emblem(XUID xuid) {
+	return nullptr;
+}
+void __fastcall c_game_manager::get_player_emblem_attribute(XUID xuid, uint32_t* a2, uint32_t* a3, uint32_t* a4) {
+
+}
+
 void __fastcall c_game_manager::set_player_look_control(
 	e_local_player player, 
 	bool inverted
@@ -92,16 +103,6 @@ s_player_profile* __fastcall c_game_manager::get_player_profile(XUID xuid) {
 	}
 
 	return nullptr;
-}
-
-void __fastcall c_game_manager::draw_player_icon(
-	XUID xuid, 
-	int, 
-	float x0, 
-	float x1, 
-	float y0, 
-	float y1
-) {
 }
 
 bool __fastcall c_game_manager::get_player_weapon_offset(

@@ -1,5 +1,6 @@
 #include "main.h"
 
+#include "../text/font_cache.h"
 #include "../logging/logging.h"
 #include "../rasterizer/rasterizer.h"
 #include "../player/player_manager.h"
@@ -73,6 +74,7 @@ int APIENTRY WinMain(
 
 	console_logger()->initialize();
 	rasterizer()->initialize();
+	font_cache()->initialize();
 	player_manager()->initialize();
 	game_instance_manager()->initialize();
 
@@ -128,6 +130,7 @@ int APIENTRY WinMain(
 
 	game_instance_manager()->shutdown();
 	player_manager()->shutdown();
+	font_cache()->shutdown();
 	rasterizer()->shutdown();
 	console_logger()->shutdown();
 

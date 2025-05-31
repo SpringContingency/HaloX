@@ -16,7 +16,7 @@ int c_rasterizer::initialize_surface() {
 			m_d3d11_device->CreateRenderTargetView(
 				surface->texture,
 				nullptr,
-				&surface->render_target_view);
+				&surface->target);
 			break;
 		}
 		case _surface_game: {
@@ -52,14 +52,14 @@ int c_rasterizer::initialize_surface() {
 				&surface->texture);
 
 			m_d3d11_device->CreateRenderTargetView(
-				surface->texture,
-				nullptr,
-				&surface->render_target_view);
+				surface->texture, 
+				nullptr, 
+				&surface->target);
 
 			m_d3d11_device->CreateShaderResourceView(
 				surface->texture,
 				nullptr,
-				&surface->shader_resource_view);
+				&surface->resource);
 			break;
 		}
 		default:
@@ -78,12 +78,12 @@ int c_rasterizer::destory_surface() {
 		auto surface = m_surfaces + i;
 		switch (i) {
 		default:
-			if (surface->shader_resource_view) {
-				surface->shader_resource_view->Release();
+			if (surface->resource) {
+				surface->resource->Release();
 			}
 
-			if (surface->render_target_view) {
-				surface->render_target_view->Release();
+			if (surface->target) {
+				surface->target->Release();
 			}
 
 			if (surface->texture) {
@@ -99,16 +99,15 @@ int c_rasterizer::destory_surface() {
 int c_rasterizer::set_surface(e_surface surface) {
 	m_d3d11_device_context->OMSetRenderTargets(
 		1, 
-		&m_surfaces[surface].render_target_view, 
+		&m_surfaces[surface].target, 
 		nullptr);
 	return 0;
 }
 
 int c_rasterizer::clear_surface(e_surface surface, const float* rgba) {
 	m_d3d11_device_context->ClearRenderTargetView(
-		m_surfaces[surface].render_target_view,
-		rgba
-	);
+		m_surfaces[surface].target,
+		rgba);
 	return 0;
 }
 

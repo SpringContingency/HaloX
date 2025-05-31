@@ -1,5 +1,7 @@
 #include "game_manager.h"
 
+#include "../text/font_cache.h"
+
 using namespace libmcc;
 
 bool __fastcall c_game_manager::font__() {
@@ -12,30 +14,40 @@ bool __fastcall c_game_manager::font___() {
 
 bool __fastcall c_game_manager::font_test_string(
 	const wchar_t* str, 
-	int font_id, 
+	int font_size, 
 	float scale, 
 	const char* font_name
 ) {
-	return false;
+	return true;
 }
 
 bool __fastcall c_game_manager::font_precache_character(
-	wchar_t c, 
+	wchar_t unicode, 
 	s_font_character* character, 
-	int font_id, 
+	int size, 
 	float scale, 
-	const char* font_name
+	const char* name
 ) {
-	return false;
+	auto result = font_cache()->precache_character(unicode, size, scale, name);
+
+	if (!result) {
+		return false;
+	}
+
+	memcpy(character, result, sizeof(s_font_character));
+
+	return true;
 }
 
-bool __fastcall c_game_manager::font_test__(int) {
-	return false;
+ID3D11ShaderResourceView* __fastcall c_game_manager::font_get_texture(
+	int texture_id
+) {
+	return font_cache()->get_texture_resource(texture_id);
 }
 
 bool __fastcall c_game_manager::font_test_char(
 	wchar_t c, 
-	int font_id, 
+	int size,
 	float scale, 
 	const char* font_name
 ) {
@@ -43,18 +55,18 @@ bool __fastcall c_game_manager::font_test_char(
 }
 
 int __fastcall c_game_manager::font_get_kerning_pair_offset(
-	wchar_t c, 
-	int, 
-	int font_id, 
+	wchar_t left, 
+	wchar_t right,
+	int size, 
 	float scale, 
-	const char* font_name
+	const char* name
 ) {
-	return 0;
+	return font_cache()->get_kerning_pair_offset(left, right, size, scale, name);
 }
 
 bool __fastcall c_game_manager::font_set__(
 	wchar_t c, 
-	int font_id, 
+	int font_size, 
 	float scale, 
 	const char* font_name, 
 	int len, 
@@ -63,7 +75,7 @@ bool __fastcall c_game_manager::font_set__(
 	const char* data, 
 	int size
 ) {
-#ifdef _DEBUG
+#if 0
 	size_t block_size = sizeof(int) * len;
 	std::vector<char> buffer(block_size * count);
 
@@ -78,14 +90,20 @@ bool __fastcall c_game_manager::font_set__(
 	return false;
 }
 
-bool __fastcall c_game_manager::font_get_height(
-	int font_id, 
+bool __fastcall libmcc::c_game_manager::font_set_selection(
+	int size, 
 	float scale, 
 	const char* font_name, 
 	uint16_t* ascender, 
 	uint16_t* descender
 ) {
-	return false;
+	return font_cache()->set_selection(
+		size,
+		scale,
+		font_name,
+		ascender,
+		descender
+	);
 }
 
 bool __fastcall c_game_manager::font____() {

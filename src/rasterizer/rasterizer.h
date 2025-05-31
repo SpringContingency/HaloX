@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "../main/main.h"
 
 constexpr FLOAT k_color_black[4] = { 0.f, 0.f, 0.f, 1.f };
@@ -24,10 +25,15 @@ struct s_shader {
 	ID3D11Buffer* constant_buffer;
 };
 
+struct s_sprite {
+	ID3D11Texture2D* texture;
+	ID3D11ShaderResourceView* resource;
+};
+
 struct s_surface {
 	ID3D11Texture2D* texture;
-	ID3D11RenderTargetView* render_target_view;
-	ID3D11ShaderResourceView* shader_resource_view;
+	ID3D11RenderTargetView* target;
+	ID3D11ShaderResourceView* resource;
 };
 
 class c_rasterizer {
@@ -44,6 +50,10 @@ public:
 	int clear_surface(e_surface surface, const float* rgba);
 	int copy_surface(e_surface dst, e_surface src);
 	inline const s_surface* get_surface(e_surface surface) {return &m_surfaces[surface];}
+
+	int create_sprite(int width, int height);
+	int destory_sprite(int index);
+	inline const s_sprite* get_sprite(int index) { return &m_sprites[index]; }
 
 	int set_shader(e_shader shader);
 
@@ -73,12 +83,15 @@ private:
 	int initialize_surface();
 	int destory_surface();
 
+	int destory_sprites();
+
 private:
 	IDXGIFactory* m_dxgi_factory;
 	ID3D11Device* m_d3d11_device;
 	ID3D11DeviceContext* m_d3d11_device_context;
 	IDXGISwapChain* m_dxgi_swap_chain;
 
+	std::vector<s_sprite> m_sprites;
 	s_shader m_shaders[k_shader_count];
 	s_surface m_surfaces[k_surface_count];
 };

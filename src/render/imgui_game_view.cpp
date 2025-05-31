@@ -170,7 +170,7 @@ void c_imgui_game_ingame_view::render_internal() {
 	auto p1 = window->WorkRect.Max + window->WindowPadding;
 
 	window->DrawList->AddImage(
-		reinterpret_cast<ImTextureID>(surface->shader_resource_view),
+		reinterpret_cast<ImTextureID>(surface->resource),
 		p0,
 		p1,
 		ImVec2(0, 0),

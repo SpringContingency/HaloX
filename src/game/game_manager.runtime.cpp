@@ -56,12 +56,18 @@ void __fastcall c_game_manager::set_game_engine_variant(i_game_engine_variant* v
 void __fastcall c_game_manager::set_scenario_map_variant(i_scenario_map_variant* variant) {
 }
 
-bool __fastcall c_game_manager::get_game_mode(
-	int a2, 
-	unsigned int a3, 
-	wchar_t* buf, 
-	size_t len
-) {
+uintptr_t __fastcall libmcc::c_game_manager::get_mcc_string(const char* string_name, wchar_t* buf, size_t len) {
+	return uintptr_t();
+}
+
+bool __fastcall libmcc::c_game_manager::use_custom_string_mapping() {
+	return false;
+}
+
+void __fastcall libmcc::c_game_manager::insert_string(int unic_datum_index, int string_id, const char* unic_tag_name, const char* string_name) {
+}
+
+bool __fastcall libmcc::c_game_manager::get_string(int unic_datum_index, int string_id, wchar_t* buf, size_t len) {
 	return false;
 }
 

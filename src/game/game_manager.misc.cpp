@@ -84,31 +84,7 @@ uintptr_t __fastcall c_game_manager::sub_1401E4EC4() {
 	return uintptr_t();
 }
 
-uintptr_t __fastcall c_game_manager::sub_1401E6664() {
-	return uintptr_t();
-}
-
-uintptr_t __fastcall c_game_manager::sub_1401E66C4() {
-	return uintptr_t();
-}
-
-uintptr_t __fastcall c_game_manager::sub_1401E67A8() {
-	return uintptr_t();
-}
-
-uintptr_t __fastcall c_game_manager::sub_1401E67D4() {
-	return uintptr_t();
-}
-
-uintptr_t __fastcall c_game_manager::sub_1401E3EF0() {
-	return uintptr_t();
-}
-
-uintptr_t __fastcall c_game_manager::sub_1401E4418() {
-	return uintptr_t();
-}
-
-uintptr_t __fastcall c_game_manager::sub_1401E44C8() {
+uintptr_t __fastcall libmcc::c_game_manager::sub_1401E6664(void* a2) {
 	return uintptr_t();
 }
 
@@ -181,18 +157,6 @@ uintptr_t __fastcall c_game_manager::sub_1401E763C() {
 }
 
 uintptr_t __fastcall c_game_manager::sub_1401E7668() {
-	return uintptr_t();
-}
-
-uintptr_t __fastcall c_game_manager::sub_1401E7684() {
-	return uintptr_t();
-}
-
-uintptr_t __fastcall c_game_manager::sub_1401E7718() {
-	return uintptr_t();
-}
-
-uintptr_t __fastcall c_game_manager::sub_1401E5880() {
 	return uintptr_t();
 }
 
