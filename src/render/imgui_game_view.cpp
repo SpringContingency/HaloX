@@ -166,8 +166,30 @@ void c_imgui_game_ingame_view::render_internal() {
 
 	auto surface = rasterizer()->get_surface(_surface_game);
 
-	auto p0 = window->WorkRect.Min - window->WindowPadding;
-	auto p1 = window->WorkRect.Max + window->WindowPadding;
+	D3D11_TEXTURE2D_DESC desc;
+	surface->texture->GetDesc(&desc);
+
+	const float image_width = desc.Width > 0 ? desc.Width : 1;
+	const float image_height = desc.Height > 0 ? desc.Height : 1;
+	const float image_aspect = image_width / image_height;
+
+	const ImVec2 work_p0 = window->WorkRect.Min - window->WindowPadding;
+	const ImVec2 work_p1 = window->WorkRect.Max + window->WindowPadding;
+	const ImVec2 available_size = work_p1 - work_p0;
+	const float available_aspect = available_size.x / available_size.y;
+
+	ImVec2 draw_size;
+	if (available_aspect > image_aspect) {
+		draw_size.y = available_size.y;
+		draw_size.x = draw_size.y * image_aspect;
+	} else {
+		draw_size.x = available_size.x;
+		draw_size.y = draw_size.x / image_aspect;
+	}
+
+	const ImVec2 draw_center = work_p0 + (available_size - draw_size) * 0.5f;
+	const ImVec2 p0 = draw_center;
+	const ImVec2 p1 = draw_center + draw_size;
 
 	window->DrawList->AddImage(
 		reinterpret_cast<ImTextureID>(surface->resource),
