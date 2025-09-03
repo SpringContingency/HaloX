@@ -153,8 +153,8 @@ int save_bitmap(HDC hDC, HBITMAP hBitmap, const TCHAR* fileName, LONG height) {
 
 	BITMAPFILEHEADER fileHeader = {
 		.bfType = 0x4d42,
-		.bfSize = sizeof(BITMAPFILEHEADER) + biSize + info.bmiHeader.biSizeImage,
-		.bfOffBits = sizeof(BITMAPFILEHEADER) + biSize
+		.bfSize = (DWORD)sizeof(BITMAPFILEHEADER) + biSize + info.bmiHeader.biSizeImage,
+		.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + biSize
 	};
 
 	CHANDLE hFile = CreateFile(
@@ -314,7 +314,8 @@ std::unique_ptr<s_backed_font> render_font(HDC hDC, HFONT hFont) {
 			RECT box;
 			SIZE size;
 			int options;
-			WCHAR str[2] { range->wcLow + j, 0 };
+			const int s = range->wcLow + j;
+			WCHAR str[2] { (WCHAR)s, 0 };
 
 			if (!GetTextExtentPoint32W(hDC, str, 1, &size)) {
 				printf("Skipping: %hX\n", str[0]);

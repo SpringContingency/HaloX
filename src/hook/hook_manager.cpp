@@ -5,7 +5,7 @@
 #include <mutex>
 
 #if defined(__x86_64__)
-test
+// test
 #endif 
 
 struct s_hook_info {
