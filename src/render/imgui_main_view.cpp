@@ -5,6 +5,19 @@
 void c_imgui_main_view::render() {
 	static bool show_demo = false;
 	static bool show_player = false;
+	extern bool g_font_cache_failed;
+	extern bool g_exit;
+
+	if (g_font_cache_failed) {
+		if (ImGui::Begin("Error")) {
+			ImGui::TextUnformatted("Failed to initalize font cache.");
+			if (ImGui::Button("Close")) {
+				g_exit = true;
+			}
+		}
+		ImGui::End();
+		return;
+	}
 
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("...")) {
