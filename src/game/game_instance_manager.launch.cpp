@@ -89,20 +89,20 @@ int c_game_instance_manager::launch_game(const s_game_prop* prop) {
 
 	switch (prop->mode) {
 	case _game_mode_campaign:
-		if (prop->mode == _module_groundhog) {
+		if (prop->module == _module_groundhog) {
 			return -2;
 		}
 		new (&m_game_options_storage.campaign_game_options) c_campaign_game_options();
 		game_options->difficulty_level = prop->difficulty;
 		break;
 	case _game_mode_spartan_ops:
-		if (prop->mode != _module_halo4) {
+		if (prop->module != _module_halo4) {
 			return -2;
 		}
 		new (&m_game_options_storage.spartan_ops_game_options) c_spartan_ops_game_options();
 		break;
 	case _game_mode_multiplayer:
-		if (prop->mode == _module_halo3odst) {
+		if (prop->module == _module_halo3odst) {
 			return -2;
 		}
 		new (&m_game_options_storage.multiplayer_game_options) c_multiplayer_game_options();
@@ -127,12 +127,12 @@ int c_game_instance_manager::launch_game(const s_game_prop* prop) {
 			map_variant = 
 				i_unknown_ptr<i_scenario_map_variant>(data_access->create_scenario_map_variant_from_map_id(&prop->map));
 #else
-			if (hopper_map_variant == -1) {
+			if (prop->hopper_map_variant == -1) {
 				return -2;
 			}
 
 
-			map_variant = get_map_variant(game, hopper_map_variant);
+			map_variant = get_map_variant(prop->module, prop->hopper_map_variant);
 #endif
 
 
