@@ -46,6 +46,9 @@ int c_font_cache::initialize() {
 	font_package_file.read(font_package_buffer.get(), font_package_size);
 
 	m_package = load_font_package(font_package_buffer.get(), font_package_size);
+	if (m_package == nullptr) {
+		return -1;
+	}
 
 	m_faces.resize(m_package->fonts.size());
 

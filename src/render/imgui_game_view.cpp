@@ -33,6 +33,10 @@ constexpr const char* game_difficulty_names[] = {
 };
 
 void c_imgui_game_view::render() {
+	extern bool g_font_cache_failed;
+	if (g_font_cache_failed) {
+		return;
+	}
 	if (ImGui::Begin("Game Window")) {
 		render_internal();
 	}

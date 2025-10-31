@@ -52,6 +52,9 @@ const wchar_t* main_get_root_folder() {
 	return root_folder.c_str();
 }
 
+bool g_font_cache_failed = false;
+bool g_exit = false;
+
 int APIENTRY WinMain(
 	HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -59,11 +62,8 @@ int APIENTRY WinMain(
 	int       nShowCmd
 ) {
 	MSG msg;
-	bool exit;
 	int status;
 	int main_thread_id;
-
-	exit = false;
 
 	g_win32_parameter.cmd_show = nShowCmd;
 	g_win32_parameter.cmd_line = lpCmdLine;
@@ -74,11 +74,13 @@ int APIENTRY WinMain(
 
 	console_logger()->initialize();
 	rasterizer()->initialize();
-	font_cache()->initialize();
+	if (font_cache()->initialize() < 0) {
+		g_font_cache_failed = true;
+	}
 	player_manager()->initialize();
 	game_instance_manager()->initialize();
 
-	while (!exit) {
+	while (!g_exit) {
 		while (true) {
 			status = PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
 
@@ -87,7 +89,7 @@ int APIENTRY WinMain(
 			}
 
 			if (msg.message == WM_QUIT) {
-				exit = true;
+				g_exit = true;
 				break;
 			}
 			
