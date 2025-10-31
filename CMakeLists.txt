@@ -8,6 +8,7 @@ endif()
 set(SDL_STATIC ON)
 set(SDL_SHARED OFF)
 set(CMAKE_CXX_STANDARD 20)
+set(ZLIB_BUILD_TESTING OFF) # Clang will try to build this
 
 add_subdirectory("./dep/libmcc")
 add_subdirectory("./dep/freetype")
@@ -58,7 +59,8 @@ add_compile_definitions(PROJECT_NAME=${PROJECT_NAME})
 
 file(GLOB_RECURSE ${PROJECT_NAME}_SRC "${CMAKE_SOURCE_DIR}/src/*.cpp" "${CMAKE_SOURCE_DIR}/src/*.c")
 
-add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
+# Tell clang to build using subsystem windows for winMain
+add_executable(${PROJECT_NAME} WIN32 ${${PROJECT_NAME}_SRC})
 
 target_link_libraries(${PROJECT_NAME} 
 	DbgHelp d3d11 Xinput
