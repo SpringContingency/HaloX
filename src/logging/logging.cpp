@@ -11,7 +11,7 @@ int c_console_logger::initialize() {
 	FILE* file;
 
 	// check if console already exists
-	if (GetConsoleWindow != NULL) {
+	if (GetConsoleWindow() != NULL) {
 		m_initialized = true;
 		return 0; // console already exists
 	}
@@ -32,7 +32,7 @@ int c_console_logger::initialize() {
 
 int c_console_logger::shutdown() {
 	// check if console exists
-	if (GetConsoleWindow == NULL) {
+	if (GetConsoleWindow() == NULL) {
 		m_initialized = false;
 		return 0; // console does not exist
 	}
