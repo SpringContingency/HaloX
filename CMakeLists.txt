@@ -1,76 +1,97 @@
 ﻿cmake_minimum_required (VERSION 3.10)
 
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
+project(HaloX
+	LANGUAGES C CXX
+)
+
+set(CMAKE_CXX_STANDARD 20)
+
+string(TIMESTAMP COMPILE_TIME %Y-%m-%dT%H:%M:%SZ)
+
+add_compile_definitions(
+	UNICODE _UNICODE
+	PROJECT_NAME=${PROJECT_NAME}
+	COMPILE_TIME=${COMPILE_TIME}
+)
+
+if(COMMIT_HASH)
+	add_compile_definitions(COMMIT_HASH=${COMMIT_HASH})
 endif()
 
-set(SDL_STATIC ON)
-set(SDL_SHARED OFF)
-set(CMAKE_CXX_STANDARD 20)
-set(ZLIB_BUILD_TESTING OFF) # Clang will try to build this
+#					Packages
+# [zlib]
+# url = https://github.com/madler/zlib.git
+# commit = 51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf
+# tag = v3.12.0
+#
+# [freetype]
+# url = https://github.com/freetype/freetype.git
+# commit = 526ec5c47b9ebccc4754c85ac0c0cdf7c85a5e9b
+# tag = VER-2-14-1
+#
+# [json]
+# url = https://github.com/nlohmann/json.git
+# commit = e7d2d636affeeac1fc7175fb13472ca02d1bc0d1
+# tag = v3.12.0
+#
+# [imgui]
+# url = https://github.com/ocornut/imgui.git
+# commit = e7d2d636affeeac1fc7175fb13472ca02d1bc0d1
+# tag = v1.92.4-docking
+#
+# [libmcc]
+# url = https://github.com/SpringContingency/libmcc.git
+# commit = a8910a6737c234338cb4018912dbaf066af75214
+find_package(ZLIB REQUIRED)
+find_package(Freetype REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(imgui REQUIRED)
+find_package(libmcc REQUIRED)
 
-add_subdirectory("./dep/libmcc")
-add_subdirectory("./dep/freetype")
-add_subdirectory("./dep/zlib")
-add_subdirectory("./dep/json")
+#					Sources
+file(GLOB TOOL_SOURCES "src/tool/*.cpp")
+file(GLOB_RECURSE HALOX_SOURCES "src/*.cpp" "src/*.c" )
+list(FILTER HALOX_SOURCES EXCLUDE REGEX "src/tool/")
 
-add_compile_definitions(UNICODE _UNICODE)
+#					Executables
+project(halox)
 
-# imgui
-project(imgui)
-
-set(${PROJECT_NAME}_SRC 
-	./dep/imgui/imgui.cpp
-	./dep/imgui/imgui_demo.cpp
-	./dep/imgui/imgui_draw.cpp
-	./dep/imgui/imgui_tables.cpp
-	./dep/imgui/imgui_widgets.cpp
-	./dep/imgui/backends/imgui_impl_dx11.cpp
-	./dep/imgui/backends/imgui_impl_win32.cpp
+add_executable(halox
+	WIN32 # Tell clang to build using subsystem windows for winMain
+	${HALOX_SOURCES}
 )
 
-add_library(${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SRC})
-
-target_include_directories(${PROJECT_NAME} PUBLIC ./dep/imgui)
-
-# tool
-project("tool")
-
-file(GLOB_RECURSE ${PROJECT_NAME}_SRC "${CMAKE_SOURCE_DIR}/src/tool/*.cpp")
-
-add_executable(${PROJECT_NAME} 
-	${${PROJECT_NAME}_SRC} 
-	"${CMAKE_SOURCE_DIR}/src/text/font_package.cpp"
-)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-	nlohmann_json freetype zlibstatic libmcc
-)
-
-target_link_options(${PROJECT_NAME} PRIVATE
-	$<$<CXX_COMPILER_ID:MSVC>:/ENTRY:mainCRTStartup>
-)
-
-# halox
-project("halox")
-
-add_compile_definitions(PROJECT_NAME=${PROJECT_NAME})
-
-file(GLOB_RECURSE ${PROJECT_NAME}_SRC "${CMAKE_SOURCE_DIR}/src/*.cpp" "${CMAKE_SOURCE_DIR}/src/*.c")
-
-# Tell clang to build using subsystem windows for winMain
-add_executable(${PROJECT_NAME} WIN32 ${${PROJECT_NAME}_SRC})
-
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(halox PRIVATE
 	DbgHelp d3d11 Xinput
-	nlohmann_json
-	freetype zlibstatic
-	imgui libmcc 
+	ZLIB::ZLIB
+	nlohmann_json::nlohmann_json
+	Freetype::Freetype
+	libmcc::libmcc
+	ImGui::ImGui
 )
 
-target_link_options(${PROJECT_NAME} PRIVATE
-	$<$<CXX_COMPILER_ID:MSVC>:/ENTRY:WinMainCRTStartup>
+install(TARGETS halox
+    EXPORT haloxTargets
+    RUNTIME  DESTINATION .
 )
 
-install(TARGETS ${PROJECT_NAME} DESTINATION $ENV{MCC_DIR})
+project(tool)
+
+add_executable(tool
+	${TOOL_SOURCES}
+	"src/text/font_package.cpp"
+)
+
+target_link_libraries(tool PRIVATE
+	ZLIB::ZLIB 
+	Freetype::Freetype 
+	nlohmann_json::nlohmann_json 
+	libmcc::libmcc
+)
+
+install(TARGETS tool
+    EXPORT toolTargets
+    RUNTIME  DESTINATION .
+)
+
+# optional: install dependency dll

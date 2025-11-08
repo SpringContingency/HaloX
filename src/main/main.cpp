@@ -9,10 +9,10 @@
 #include "../render/imgui_main_view.h"
 #include "../render/imgui_game_view.h"
 
-#include <imgui.h>
-#include <imgui_internal.h>
-#include <backends/imgui_impl_dx11.h>
-#include <backends/imgui_impl_win32.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+#include <imgui/imgui_impl_dx11.h>
+#include <imgui/imgui_impl_win32.h>
 
 using namespace libmcc;
 
