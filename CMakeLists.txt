@@ -18,35 +18,8 @@ if(COMMIT_HASH)
 	add_compile_definitions(COMMIT_HASH=${COMMIT_HASH})
 endif()
 
-#					Packages
-# [zlib]
-# url = https://github.com/madler/zlib.git
-# commit = 51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf
-# tag = v3.12.0
-#
-# [freetype]
-# url = https://github.com/freetype/freetype.git
-# commit = 526ec5c47b9ebccc4754c85ac0c0cdf7c85a5e9b
-# tag = VER-2-14-1
-#
-# [json]
-# url = https://github.com/nlohmann/json.git
-# commit = e7d2d636affeeac1fc7175fb13472ca02d1bc0d1
-# tag = v3.12.0
-#
-# [imgui]
-# url = https://github.com/ocornut/imgui.git
-# commit = e7d2d636affeeac1fc7175fb13472ca02d1bc0d1
-# tag = v1.92.4-docking
-#
-# [libmcc]
-# url = https://github.com/SpringContingency/libmcc.git
-# commit = a8910a6737c234338cb4018912dbaf066af75214
-find_package(ZLIB REQUIRED)
-find_package(Freetype REQUIRED)
-find_package(nlohmann_json REQUIRED)
-find_package(imgui REQUIRED)
-find_package(libmcc REQUIRED)
+#Manage Dependencies
+include(cmake/dependency-management.cmake)
 
 #					Sources
 file(GLOB TOOL_SOURCES "src/tool/*.cpp")
