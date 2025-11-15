@@ -5,8 +5,8 @@
 #include "../render/imgui_game_view.h"
 #include "../render/imgui_game_halo3_view.h"
 
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_win32.h>
+#include <imgui.h>
+#include <imgui_impl_win32.h>
 
 using namespace libmcc;
 
