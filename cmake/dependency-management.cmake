@@ -1,36 +1,19 @@
+#[[
+DependencyManagement
+--------------------
+Find project dependencies
+
+]]#
+
 include(cmake/CPM.cmake)
+
 # Make cpm download everything into this subdir.
 set(CPM_SOURCE_CACHE ${CMAKE_SOURCE_DIR}/cmake/cache)
 
-#					Packages
-# [zlib]
-# url = https://github.com/madler/zlib.git
-# commit = 51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf
-# tag = v3.12.0
-#
-# [freetype]
-# url = https://github.com/freetype/freetype.git
-# commit = 526ec5c47b9ebccc4754c85ac0c0cdf7c85a5e9b
-# tag = VER-2-14-1
-#
-# [json]
-# url = https://github.com/nlohmann/json.git
-# commit = e7d2d636affeeac1fc7175fb13472ca02d1bc0d1
-# tag = v3.12.0
-#
-# [imgui]
-# url = https://github.com/ocornut/imgui.git
-# commit = e7d2d636affeeac1fc7175fb13472ca02d1bc0d1
-# tag = v1.92.4-docking
-#
-# [libmcc]
-# url = https://github.com/SpringContingency/libmcc.git
-# commit = a8910a6737c234338cb4018912dbaf066af75214
-
 CPMAddPackage(
-  NAME zlib
-  GITHUB_REPOSITORY madler/zlib
-  GIT_TAG 51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf
+  # URI   "gh:madler/zlib#v1.3.1"
+  NAME  zlib
+  URL   "https://github.com/madler/zlib/archive/refs/tags/v1.3.1.zip"
 )
 
 if (zlib_ADDED)
@@ -40,9 +23,9 @@ if (zlib_ADDED)
 endif()
 
 CPMAddPackage(
-  NAME nlohmann_json
-  GITHUB_REPOSITORY nlohmann/json
-  GIT_TAG v3.12.0
+  # URI   "gh:nlohmann/json#v3.12.0"
+  NAME  nlohmann_json
+  URL   "https://github.com/nlohmann/json/archive/refs/tags/v3.12.0.zip"
 )
 
 if (nlohmann_json_ADDED)
@@ -50,9 +33,9 @@ if (nlohmann_json_ADDED)
 endif()
 
 CPMAddPackage(
-  NAME freetype
-  GITHUB_REPOSITORY freetype/freetype
-  GIT_TAG VER-2-14-1
+  # URI   "gh:freetype/freetype#VER-2-14-1"
+  NAME  freetype
+  URL   "https://github.com/freetype/freetype/archive/refs/tags/VER-2-14-1.zip"
 )
 
 if (freetype_ADDED)
@@ -60,9 +43,8 @@ if (freetype_ADDED)
 endif()
 
 CPMAddPackage(
-  NAME libmcc
-  GITHUB_REPOSITORY SpringContingency/libmcc
-  GIT_TAG a8910a6737c234338cb4018912dbaf066af75214
+  URI   "gh:SpringContingency/libmcc#a8910a6737c234338cb4018912dbaf066af75214"
+  NAME  libmcc
 )
 
 if (libmcc_ADDED)
@@ -70,9 +52,9 @@ if (libmcc_ADDED)
 endif()
 
 CPMAddPackage(
-  NAME imgui
-  GITHUB_REPOSITORY ocornut/imgui
-  GIT_TAG v1.92.4-docking
+  # URI   "gh:ocornut/imgui#v1.92.4-docking"
+  NAME  imgui
+  URL   "https://github.com/ocornut/imgui/archive/refs/tags/v1.92.4-docking.zip"
 )
 
 # Imgui does not have its own cmake setup.
