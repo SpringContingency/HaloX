@@ -5,6 +5,20 @@ Find project dependencies
 
 ]]#
 
+option(USE_LOCAL_PACKAGES 
+  "Use `find_package` and prevent including CPM" 
+  $ENV{USE_LOCAL_PACKAGES}
+)
+
+if(USE_LOCAL_PACKAGES)
+  find_package(ZLIB REQUIRED)
+  find_package(Freetype REQUIRED)
+  find_package(nlohmann_json REQUIRED)
+  find_package(imgui REQUIRED)
+  find_package(libmcc REQUIRED)
+  return()
+endif()
+
 include(cmake/CPM.cmake)
 
 # Make cpm download everything into this subdir.
