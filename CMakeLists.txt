@@ -45,7 +45,7 @@ target_link_libraries(halox PRIVATE
 
 install(TARGETS halox
     EXPORT haloxTargets
-    RUNTIME  DESTINATION .
+    RUNTIME  DESTINATION $ENV{MCC_DIR}
 )
 
 project(tool)
@@ -64,7 +64,7 @@ target_link_libraries(tool PRIVATE
 
 install(TARGETS tool
     EXPORT toolTargets
-    RUNTIME  DESTINATION .
+    RUNTIME  DESTINATION $ENV{MCC_DIR}
 )
 
 # optional: install dependency dll
