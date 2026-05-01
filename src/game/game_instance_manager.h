@@ -17,6 +17,15 @@ struct s_game_prop {
 	int film = -1;
 
 	int game_tick = 60;
+
+	// Campaign-launch options (ignored for non-campaign modes).
+	//   skull_flags — bitmask of libmcc::e_skull. Stamped into
+	//   s_game_options::skulls before the engine reads it. 0 = no skulls.
+	//   campaign_insertion_point — engine-internal checkpoint index. 0 starts
+	//   the mission from the beginning; non-zero jumps to a level checkpoint
+	//   (per-game; halo3 typically supports 0..N for each scenario).
+	uint64_t skull_flags = 0;
+	int campaign_insertion_point = 0;
 };
 
 constexpr const char* k_game_names[]{
@@ -30,8 +39,16 @@ constexpr const char* k_game_names[]{
 };
 
 struct s_game_local {
+	// Absolute directory the variants below were enumerated from. Used by
+	// get_saved_game_file to load the right .bin / .mvar — populated by
+	// load_local. Empty == cwd-relative (legacy junction setup).
+	std::wstring             game_variant_dir;
+	std::wstring             map_variant_dir;
 	std::vector<std::string> hopper_game_variants;
 	std::vector<std::string> hopper_map_variants;
+	// Parallel to hopper_map_variants. -1 == unknown (libmcc parse failed or module not loaded);
+	// the imgui filter treats unknowns as "always visible" so a parse miss doesn't hide a file.
+	std::vector<int>         hopper_map_variant_ids;
 	std::vector<std::string> films;
 };
 
@@ -62,10 +79,23 @@ public:
 		LPARAM lParam);
 
 	int post_message(
-		libmcc::e_game_message message, 
+		libmcc::e_game_message message,
 		const libmcc::s_game_message_parameter* parameter = nullptr);
 
+	// Tear down the pause overlay AND resume the game engine. Used by every
+	// pause-menu button that closes the overlay — RESUME, REVERT, RESTART
+	// all need this. Without it the engine stays paused (since ESC is no
+	// longer the only path out) and queued actions like revert/restart
+	// never get processed by the per-tick pump.
+	void dismiss_pause_overlay();
+
 	int launch_game(const s_game_prop* prop);
+
+	// Worker-thread entry point. Called only by halox::ui::ui_launch_run_internal
+	// (the trampoline declared in game_instance_manager.win32.cpp). Drives the
+	// existing launch_game_internal() — exposed publicly only so the ui module
+	// doesn't need to befriend the manager.
+	int launch_game_internal_for_worker() { return launch_game_internal(); }
 
 	s_module_flags load_modules(s_module_flags);
 	s_module_flags unload_modules(s_module_flags);
@@ -102,6 +132,10 @@ public:
 		return m_game;
 	}
 
+	libmcc::e_game_mode get_mode() {
+		return m_game_options_storage.game_options.game_mode;
+	}
+
 	static c_game_instance_manager g_game_instance_manager;
 
 private:
@@ -116,6 +150,12 @@ private:
 	bool m_game_paused;
 	libmcc::e_module m_game;
 	libmcc::i_game_engine* m_game_engine;
+	// Secondary engine — used by halo2 to host the Anniversary (groundhog)
+	// renderer alongside the classic halo2 engine. The primary game thread
+	// belongs to m_game_engine; the secondary is created + initialize()d
+	// only (no initialize_game), purely so its draw subsystem is wired up
+	// when halo2 toggles to Anniversary visuals. nullptr when not used.
+	libmcc::i_game_engine* m_game_engine_secondary = nullptr;
 	s_game_options_storage m_game_options_storage;
 
 	libmcc::e_module m_running_game = libmcc::k_module_none;

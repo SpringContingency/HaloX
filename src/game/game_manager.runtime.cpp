@@ -4,20 +4,55 @@
 #include "../logging/logging.h"
 #include "game_instance_manager.h"
 
+#include <Windows.h>
+#include <Psapi.h>
+
+#pragma comment(lib, "Psapi.lib")
+
 using namespace libmcc;
 
 void __fastcall c_game_manager::set_game_state(e_game_state state) {
 	CONSOLE_LOG_DEBUG("set_game_state:%d", state);
 }
 
+// When halo3 (or any module) reports restart_game(reason=0, message=NULL) the
+// useful question is: where in the DLL did the call originate? Capture a few
+// frames of the C++ caller stack and resolve each to module+offset so we can
+// take the address back to Ghidra and identify the bail-out site.
+static void log_restart_callstack() {
+	void* frames[16] = {};
+	USHORT count = RtlCaptureStackBackTrace(0, 16, frames, nullptr);
+	for (USHORT i = 0; i < count; ++i) {
+		HMODULE mod = nullptr;
+		if (!GetModuleHandleExW(
+			GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+			(LPCWSTR)frames[i], &mod)) {
+			CONSOLE_LOG_DEBUG("  frame[%u] %p (?)", (unsigned)i, frames[i]);
+			continue;
+		}
+		wchar_t name[MAX_PATH] = L"?";
+		GetModuleFileNameW(mod, name, MAX_PATH);
+		const wchar_t* leaf = wcsrchr(name, L'\\');
+		leaf = leaf ? leaf + 1 : name;
+		uintptr_t base = (uintptr_t)mod;
+		uintptr_t off  = (uintptr_t)frames[i] - base;
+		CONSOLE_LOG_DEBUG("  frame[%u] %ls+0x%llX (%p)", (unsigned)i, leaf,
+			(unsigned long long)off, frames[i]);
+	}
+}
+
 void __fastcall c_game_manager::restart_game(
-	e_game_restart_reason reason, 
+	e_game_restart_reason reason,
 	const char* message
 ) {
+	if (message == nullptr) {
+		CONSOLE_LOG_DEBUG("restart_game(reason=%d, message=NULL) — capturing callstack:", (int)reason);
+		log_restart_callstack();
+	}
 	PostMessageW(
-		g_win32_parameter.window_handle, 
-		_window_message_game_restart, 
-		reason, 
+		g_win32_parameter.window_handle,
+		_window_message_game_restart,
+		reason,
 		reinterpret_cast<LPARAM>(message));
 }
 

@@ -3,7 +3,9 @@
 #include "../rasterizer/rasterizer.h"
 #include "../geometry/rect_pack.h"
 #include "font_package.h"
+#include "halo2_bitmap_font.h"
 
+#include <memory>
 #include <unordered_set>
 #include <libmcc/libmcc.h>
 
@@ -70,6 +72,12 @@ public:
 
 	struct FT_FaceRec_* get_face(int index);
 
+	// Lazy-load a Windows system TTF for a Halo-specific font name (Conduit,
+	// HandelGothic, TVNordCond, Fixedsys, Eurostile…). Appends the TTF as a
+	// synthetic font into m_package and returns the new s_font*, or nullptr
+	// if no substitution is configured / the system file isn't readable.
+	const s_font* find_or_register_substitute(const char* name);
+
 	const struct FT_GlyphSlotRec_* render_character(
 		wchar_t unicode,
 		int size, 
@@ -89,6 +97,15 @@ public:
 
 	const s_font* get_subtypeface_font(wchar_t unicode, const char* name);
 
+	// Look up (or lazy-load) MCC's halo2 bitmap font for `name`+`size`. Maps
+	// halox font names (Conduit, ConduitMed, HandelGothic, FixedSys, MSLCD)
+	// to the corresponding `<MCC>/halo2/h2_fonts/<family>-<size>` file,
+	// snapping `size` to the closest available native size for that family.
+	// Returns nullptr if MCC root unresolvable, the family has no h2_fonts
+	// equivalent, or the file is missing/malformed (negative cache prevents
+	// retrying the same key).
+	c_h2_bitmap_font* find_or_load_h2_bitmap(const char* name, int size);
+
 	static c_font_cache g_font_cache;
 
 private:
@@ -98,6 +115,24 @@ private:
 	std::vector<struct FT_FaceRec_*> m_faces;
 	std::unique_ptr<s_runtime_font_package> m_package;
 	std::unordered_map<s_character_info, libmcc::s_font_character> m_cache;
+
+	// Negative cache sentinel = -1; otherwise the index into m_package->fonts
+	// of the lazily-registered system-TTF substitute for that name.
+	std::unordered_map<std::string, int> m_substitute_index;
+
+	// Lazy-loaded halo2 bitmap fonts, keyed by "<family>-<size>" (e.g.
+	// "conduit-13"). nullptr value = negative cache (load attempted, failed).
+	std::unordered_map<std::string, std::unique_ptr<c_h2_bitmap_font>> m_h2_fonts;
+
+	// Pack a single h2 glyph into the atlas and build its s_font_character
+	// metrics. Used by precache_character when find_or_load_h2_bitmap hits.
+	// `render_scale` resamples the glyph bitmap (nearest-neighbor) and
+	// proportionally scales every metric — needed because h2 atlases are
+	// per-fixed-pixel-size and the engine asks for arbitrary sizes.
+	const libmcc::s_font_character* upload_h2_glyph(
+		const s_h2_glyph& glyph,
+		const s_character_info& info,
+		float render_scale);
 };
 
 inline c_font_cache* font_cache() {

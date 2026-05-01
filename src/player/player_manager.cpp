@@ -98,13 +98,17 @@ int c_player_manager::get_player_profile(
 }
 
 int c_player_manager::set_player_profile(
-	e_local_player player, 
-	e_module game, 
+	e_local_player player,
+	e_module game,
 	const s_player_profile* profile
 ) {
 	auto info = m_player_infos.get() + player;
 	AcquireSRWLockExclusive(&m_lock);
-	memcpy(info->profile, profile, sizeof(*profile));
+	// Index by `game` to mirror get_player_profile (line 95). Without the
+	// `+ game`, every write lands on slot 0 (halo1), so MCC settings stamped
+	// for halo3/haloreach/etc. were silently going into halo1's slot and the
+	// real per-game slot stayed at default-initialized zero.
+	memcpy(info->profile + game, profile, sizeof(*profile));
 	ReleaseSRWLockExclusive(&m_lock);
 	return 0;
 }

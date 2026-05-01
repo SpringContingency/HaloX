@@ -2,6 +2,7 @@
 
 #include "../player/player_manager.h"
 #include "../game/game_instance_manager.h"
+#include "../game/mcc_user_settings.h"
 
 using namespace libmcc;
 
@@ -93,11 +94,19 @@ s_player_profile* __fastcall c_game_manager::get_player_profile(XUID xuid) {
 			continue;
 		}
 
+		auto module = game_instance_manager()->get_game();
 		player_manager()->get_player_profile(
 			player,
-			game_instance_manager()->get_game(),
+			module,
 			&profile
 		);
+
+		// Overlay the latest MCC settings (including any live imgui edits) on
+		// top of the profile that player_manager just handed us. Doing this on
+		// every fetch means the next frame the game queries the profile, the
+		// user's slider edits are visible to the title without us having to
+		// hook a "settings changed" event.
+		mcc_user_settings_stamp_profile(module, &profile);
 
 		return &profile;
 	}

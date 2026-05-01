@@ -2,12 +2,14 @@
 
 #include "import_unreal_font.h"
 #include "import_windows_font.h"
+#include "import_ttf.h"
 
 #include <iostream>
 
 static s_command* commands[] {
 	&g_command_import_unreal_font,
 	&g_command_import_windows_font,
+	&g_command_import_ttf,
 };
 
 static constexpr int command_count = sizeof(commands) / sizeof(s_command*);

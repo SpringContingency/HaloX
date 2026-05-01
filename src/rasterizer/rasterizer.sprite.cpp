@@ -7,7 +7,12 @@ int c_rasterizer::create_sprite(int width, int height) {
 		.Height = (UINT)height,
 		.MipLevels = 1,
 		.ArraySize = 1,
-		.Format = DXGI_FORMAT_A8_UNORM,
+		// RGBA8, not A8: the game DLLs' text shaders sample this atlas as a
+		// full RGBA texture and read .rgb as the glyph color. An A8 atlas
+		// returns rgb=(0,0,0) on sample, producing solid black text. We write
+		// white-with-alpha pixels (FF FF FF <coverage>) so .rgb reads white
+		// and .a still encodes coverage — works for both interpretations.
+		.Format = DXGI_FORMAT_R8G8B8A8_UNORM,
 		.SampleDesc = {1, 0},
 		.Usage = D3D11_USAGE_DEFAULT,
 		.BindFlags = D3D11_BIND_SHADER_RESOURCE,

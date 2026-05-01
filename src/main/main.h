@@ -13,6 +13,7 @@
 enum e_window_message : UINT {
 	_window_message_none = WM_USER,
 	_window_message_game_launch,
+	_window_message_game_launch_finished,  // posted by main loop when worker finishes
 	_window_message_game_resize,
 	_window_message_game_restart,
 	_window_message_game_focus,

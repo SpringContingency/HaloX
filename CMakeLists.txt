@@ -41,6 +41,7 @@ target_link_libraries(halox PRIVATE
 	Freetype::Freetype
 	libmcc::libmcc
 	ImGui::ImGui
+	MinHook::MinHook
 )
 
 install(TARGETS halox

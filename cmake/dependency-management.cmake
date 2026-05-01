@@ -66,6 +66,26 @@ if (libmcc_ADDED)
 endif()
 
 CPMAddPackage(
+  NAME  minhook
+  URL   "https://github.com/TsudaKageyu/minhook/archive/refs/tags/v1.3.3.zip"
+  DOWNLOAD_ONLY YES
+)
+
+if (minhook_ADDED)
+  # MinHook ships its own VS solution but no CMakeLists; build the library
+  # ourselves from the small set of platform sources.
+  set(MINHOOK_SOURCES
+    ${minhook_SOURCE_DIR}/src/buffer.c
+    ${minhook_SOURCE_DIR}/src/hook.c
+    ${minhook_SOURCE_DIR}/src/trampoline.c
+    ${minhook_SOURCE_DIR}/src/hde/hde64.c
+  )
+  add_library(minhook STATIC ${MINHOOK_SOURCES})
+  target_include_directories(minhook PUBLIC ${minhook_SOURCE_DIR}/include)
+  add_library(MinHook::MinHook ALIAS minhook)
+endif()
+
+CPMAddPackage(
   # URI   "gh:ocornut/imgui#v1.92.4-docking"
   NAME  imgui
   URL   "https://github.com/ocornut/imgui/archive/refs/tags/v1.92.4-docking.zip"

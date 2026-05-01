@@ -2,6 +2,7 @@
 
 #include <array>
 #include "../logging/logging.h"
+#include "../game/mcc_user_settings.h"
 
 int c_rasterizer::initialize_device() {
 	UINT flags;
@@ -16,11 +17,13 @@ int c_rasterizer::initialize_device() {
 		return 1;
 	}
 
-	flags = 0
-#ifdef _DEBUG
-		| D3D11_CREATE_DEVICE_DEBUG
-#endif
-		;
+	// NOTE: D3D11_CREATE_DEVICE_DEBUG used to be enabled in _DEBUG builds, but
+	// the debug layer (D3D11_3SDKLayers.dll) raises a structured exception on
+	// validation errors, and several MCC game DLLs (halo1 in particular) make
+	// D3D calls that fail validation — turning into hard crashes instead of
+	// just log noise. We don't get validation value from inspecting game-side
+	// draws, so disable it across the board.
+	flags = 0;
 
 	constexpr std::array<D3D_FEATURE_LEVEL, 2> d3d_feature_levels{
 		D3D_FEATURE_LEVEL_11_0,
@@ -135,7 +138,10 @@ int c_rasterizer::begin_frame_device() {
 
 int c_rasterizer::end_frame_device() {
 	if (g_win32_parameter.window_thread == GetCurrentThreadId()) {
-		m_dxgi_swap_chain->Present(1, 0);
+		// VSync from MCC's GameUserSettings.ini bUseVSync. Default true if
+		// unset/unparsed (matches the prior hardcoded `Present(1, 0)`).
+		const UINT sync_interval = mcc_user_settings()->graphics.use_vsync ? 1u : 0u;
+		m_dxgi_swap_chain->Present(sync_interval, 0);
 	}
 	return 0;
 }
